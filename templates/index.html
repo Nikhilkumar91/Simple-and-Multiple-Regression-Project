@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Regression Predictor</title>
+  <style>
+    :root {
+      --bg1: #0f172a;
+      --bg2: #1e293b;
+      --acc: #22c55e;
+      --acc2: #3b82f6;
+      --text: #e5e7eb;
+      --muted: #94a3b8;
+      --card: #111827;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial;
+      color: var(--text);
+      background: radial-gradient(1200px 600px at 10% -10%, #0b1223, transparent),
+                  radial-gradient(1000px 600px at 110% 10%, #0b2a1b, transparent),
+                  linear-gradient(160deg, var(--bg1), var(--bg2));
+      min-height: 100vh;
+      display: grid; place-items: center; padding: 24px;
+    }
+    .app {
+      width: 100%; max-width: 980px;
+    }
+    .header {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 12px; margin-bottom: 18px;
+    }
+    .brand { display: flex; align-items: center; gap: 10px; }
+    .logo {
+      width: 42px; height: 42px; border-radius: 12px; background: linear-gradient(135deg, var(--acc), var(--acc2));
+      display: grid; place-items: center; font-weight: 800; color: white; box-shadow: 0 10px 30px rgba(34,197,94,.35);
+    }
+    .title { font-size: 22px; font-weight: 700; letter-spacing: .3px; }
+    .tabs {
+      background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.06); padding: 6px; border-radius: 14px; display: inline-flex; gap: 6px;
+    }
+    .tab-btn {
+      border: 0; padding: 10px 14px; border-radius: 10px; cursor: pointer; color: var(--text);
+      background: transparent; font-weight: 600; transition: .2s ease; letter-spacing: .2px;
+    }
+    .tab-btn.active { background: var(--card); box-shadow: inset 0 0 0 1px rgba(255,255,255,.06); }
+
+    .card {
+      background: rgba(17,24,39,.85); border: 1px solid rgba(255,255,255,.08);
+      border-radius: 18px; padding: 18px; box-shadow: 0 10px 30px rgba(0,0,0,.35);
+    }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    @media (max-width: 860px) { .grid { grid-template-columns: 1fr; } }
+
+    .section-title { font-size: 18px; font-weight: 700; margin: 4px 0 14px; color: #f1f5f9; }
+
+    .field { display: grid; gap: 6px; }
+    label { color: var(--muted); font-size: 13px; }
+    input, select {
+      background: #0b1220; color: var(--text); border: 1px solid rgba(255,255,255,.08);
+      padding: 10px 12px; border-radius: 10px; outline: none; transition: .15s ease; font-size: 14px;
+    }
+    input:focus, select:focus { border-color: #60a5fa; box-shadow: 0 0 0 4px rgba(59,130,246,.15); }
+
+    .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+    .btn {
+      border: 0; border-radius: 12px; padding: 10px 14px; cursor: pointer; font-weight: 700;
+      color: white; display: inline-flex; align-items: center; gap: 8px; letter-spacing: .2px;
+    }
+    .btn-primary { background: linear-gradient(135deg, var(--acc2), #6366f1); }
+    .btn-ghost { background: rgba(255,255,255,.06); color: var(--text); }
+
+    .result {
+      display: grid; gap: 8px; padding: 14px; border-radius: 14px; background: rgba(2,6,23,.6);
+      border: 1px dashed rgba(255,255,255,.12); margin-top: 12px;
+    }
+    .result .value { font-size: 22px; font-weight: 800; }
+    .muted { color: var(--muted); font-size: 12px; }
+
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="header">
+      <div class="brand">
+        <div class="logo">ML</div>
+        <div class="title">Regression Predictor</div>
+      </div>
+      <div class="tabs">
+        <button id="tab-simple" class="tab-btn active">Simple Linear Regression</button>
+        <button id="tab-multi" class="tab-btn">Multiple Linear Regression</button>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="card" id="panel-simple">
+        <div class="section-title">Salary Prediction (Years of Experience → Salary)</div>
+        <div class="field">
+          <label for="exp">Years of Experience</label>
+          <input id="exp" type="number" step="0.01" min="0" placeholder="e.g., 3.5" />
+        </div>
+        <div class="actions">
+          <button class="btn btn-primary" id="predict-salary">Predict Salary</button>
+          <button class="btn btn-ghost" id="reset-salary">Reset</button>
+        </div>
+        <div class="result hidden" id="salary-result">
+          <div class="muted">Predicted Salary</div>
+          <div class="value" id="salary-value">—</div>
+        </div>
+      </div>
+
+      <div class="card hidden" id="panel-multi">
+        <div class="section-title">Profit Prediction (R&D, Admin, Marketing, State → Profit)</div>
+        <div class="field">
+          <label for="rd">R&amp;D Spend</label>
+          <input id="rd" type="number" step="0.01" min="0" placeholder="e.g., 120000" />
+        </div>
+        <div class="field">
+          <label for="admin">Administration</label>
+          <input id="admin" type="number" step="0.01" min="0" placeholder="e.g., 90000" />
+        </div>
+        <div class="field">
+          <label for="mkt">Marketing Spend</label>
+          <input id="mkt" type="number" step="0.01" min="0" placeholder="e.g., 140000" />
+        </div>
+        <div class="field">
+          <label for="state">State</label>
+          <select id="state">
+            <option value="0">New York (0)</option>
+            <option value="1">California (1)</option>
+            <option value="2">Florida (2)</option>
+          </select>
+        </div>
+        <div class="actions">
+          <button class="btn btn-primary" id="predict-profit">Predict Profit</button>
+          <button class="btn btn-ghost" id="reset-profit">Reset</button>
+        </div>
+        <div class="result hidden" id="profit-result">
+          <div class="muted">Predicted Profit</div>
+          <div class="value" id="profit-value">—</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:18px;">
+      <div class="section-title">Model Coefficients</div>
+      <div class="muted" style="margin-bottom:10px;">Update these with your trained model's coefficients (intercept & slopes).</div>
+      <div class="grid">
+        <div>
+          <div class="field"><label>Salary Intercept</label><input type="number" id="sal_b0" step="0.0001" /></div>
+          <div class="field"><label>Salary Slope (Years)</label><input type="number" id="sal_b1" step="0.0001" /></div>
+        </div>
+        <div>
+          <div class="field"><label>Profit Intercept</label><input type="number" id="pro_b0" step="0.0001" /></div>
+          <div class="field"><label>R&amp;D Coef</label><input type="number" id="pro_b1" step="0.0001" /></div>
+          <div class="field"><label>Admin Coef</label><input type="number" id="pro_b2" step="0.0001" /></div>
+          <div class="field"><label>Marketing Coef</label><input type="number" id="pro_b3" step="0.0001" /></div>
+          <div class="field"><label>State Coef</label><input type="number" id="pro_b4" step="0.0001" /></div>
+        </div>
+      </div>
+      <div class="actions"><button class="btn btn-primary" id="save-coefs">Save Coefficients</button></div>
+    </div>
+  </div>
+
+  <script>
+    const INR = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 2 });
+
+    const coef = {
+      salary: { b0: 25792.2, b1: 9449.96 },
+      profit: { b0: 49032.0, b1: 0.85, b2: -0.02, b3: 0.03, b4: 1000.0 }
+    };
+
+    const qs = (s) => document.querySelector(s);
+    const panelSimple = qs('#panel-simple');
+    const panelMulti  = qs('#panel-multi');
+    const tabSimple = qs('#tab-simple');
+    const tabMulti  = qs('#tab-multi');
+
+    function switchTab(which) {
+      const simpleActive = which === 'simple';
+      tabSimple.classList.toggle('active', simpleActive);
+      tabMulti.classList.toggle('active', !simpleActive);
+      panelSimple.classList.toggle('hidden', !simpleActive);
+      panelMulti.classList.toggle('hidden', simpleActive);
+    }
+
+    tabSimple.addEventListener('click', () => switchTab('simple'));
+    tabMulti.addEventListener('click', () => switchTab('multi'));
+
+    const exp = qs('#exp');
+    const salaryResult = qs('#salary-result');
+    const salaryValue = qs('#salary-value');
+
+    qs('#predict-salary').addEventListener('click', () => {
+      const x = parseFloat(exp.value);
+      if (Number.isNaN(x)) { alert('Enter valid years of experience'); return; }
+      const y = coef.salary.b0 + coef.salary.b1 * x;
+      salaryValue.textContent = INR.format(y);
+      salaryResult.classList.remove('hidden');
+    });
+    qs('#reset-salary').addEventListener('click', () => {
+      exp.value = ''; salaryResult.classList.add('hidden');
+    });
+
+    const rd = qs('#rd');
+    const admin = qs('#admin');
+    const mkt = qs('#mkt');
+    const state = qs('#state');
+    const profitResult = qs('#profit-result');
+    const profitValue = qs('#profit-value');
+
+    qs('#predict-profit').addEventListener('click', () => {
+      const x1 = parseFloat(rd.value);
+      const x2 = parseFloat(admin.value);
+      const x3 = parseFloat(mkt.value);
+      const s  = parseFloat(state.value);
+      if ([x1,x2,x3,s].some(v => Number.isNaN(v))) { alert('Enter all values'); return; }
+      const y = coef.profit.b0 + coef.profit.b1*x1 + coef.profit.b2*x2 + coef.profit.b3*x3 + coef.profit.b4*s;
+      profitValue.textContent = INR.format(y);
+      profitResult.classList.remove('hidden');
+    });
+    qs('#reset-profit').addEventListener('click', () => {
+      rd.value = admin.value = mkt.value = ''; state.value = '0'; profitResult.classList.add('hidden');
+    });
+
+    function populateCoefInputs() {
+      qs('#sal_b0').value = coef.salary.b0;
+      qs('#sal_b1').value = coef.salary.b1;
+      qs('#pro_b0').value = coef.profit.b0;
+      qs('#pro_b1').value = coef.profit.b1;
+      qs('#pro_b2').value = coef.profit.b2;
+      qs('#pro_b3').value = coef.profit.b3;
+      qs('#pro_b4').value = coef.profit.b4;
+    }
+    populateCoefInputs();
+
+    qs('#save-coefs').addEventListener('click', () => {
+      const num = (id) => parseFloat(qs(id).value);
+      const vals = [num('#sal_b0'), num('#sal_b1'), num('#pro_b0'), num('#pro_b1'), num('#pro_b2'), num('#pro_b3'), num('#pro_b4')];
+      if (vals.some(v => Number.isNaN(v))) { alert('Enter valid numeric coefficients'); return; }
+      coef.salary.b0 = vals[0];
+      coef.salary.b1 = vals[1];
+      coef.profit.b0 = vals[2];
+      coef.profit.b1 = vals[3];
+      coef.profit.b2 = vals[4];
+      coef.profit.b3 = vals[5];
+      coef.profit.b4 = vals[6];
+      alert('Coefficients saved');
+    });
+  </script>
+</body>
+</html>
