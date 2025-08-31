@@ -12,10 +12,10 @@ def home():
 
 
 # Load pickle models
-with open("C:\\Users\\nikhi\\Downloads\\SLR&MLR\\SLR_model.pkl", "rb") as f:
+with open("SLR_model.pkl", "rb") as f:
     simple_model = pickle.load(f)
 
-with open("C:\\Users\\nikhi\\Downloads\\SLR&MLR\\MLR_model.pkl", "rb") as f:
+with open("MLR_model.pkl", "rb") as f:
     multiple_model = pickle.load(f)
 
 
