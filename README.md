@@ -1,4 +1,4 @@
-📊 Simple & Multiple Linear Regression Project
+## 📊 Simple & Multiple Linear Regression Project
 
 Welcome to this project! 🎉
 This repo contains two basic but very powerful machine learning models:
@@ -7,7 +7,10 @@ This repo contains two basic but very powerful machine learning models:
 
 🔹 Multiple Linear Regression (MLR) → Predicts a value using two or more variables.
 
-📘 What’s Inside?
+----
+
+## 📘 What’s Inside?
+
 🧮 Simple Linear Regression (SLR)
 
 Predicts Y from X
@@ -25,24 +28,30 @@ Example: Predicting house price 🏠 from area, rooms, and location
 
 More accurate for real-world problems ✅
 
-🗂️ Project Structure
+------
+
+## 🗂️ Project Structure
+```
 📦 Simple-and-Multiple-Regression-Project
  ┣ 📂 datasets          # CSV files used for training
  ┣ 📂 SLR               # Simple Linear Regression code
  ┣ 📂 MLR               # Multiple Linear Regression code
  ┣ 📜 requirements.txt  # Libraries needed
  ┗ 📜 main.ipynb        # Notebook with both models
+```
 
-
-⚙️ How to Run
+------
+## ⚙️ How to Run
 
 Clone the repo:
 
 git clone https://github.com/your-username/Simple-and-Multiple-Regression-Project.git
+
 cd Simple-and-Multiple-Regression-Project
 
+-----
 
-Install dependencies:
+## Install dependencies:
 
 pip install -r requirements.txt
 
@@ -50,16 +59,17 @@ Run the notebook:
 
 jupyter notebook main.ipynb
 
+----
 
-📊 Results:-
+
+## 📊 Results:-
 
 ✅ SLR → Clear line fit between two variables
 
 ✅ MLR → Better predictions with multiple inputs
 
-🛠️ Tech Used
-
-
+------
+## 🛠️ Tech Stack Used
 
 🐍 Python:-
 
@@ -69,9 +79,9 @@ jupyter notebook main.ipynb
 
 🤖 Scikit-learn
 
+----
 
-
-🌟 Applications:-
+## 🌟 Applications:-
 
 📈 Sales & Business Forecasting
 
@@ -80,3 +90,17 @@ jupyter notebook main.ipynb
 💰 Salary Estimation
 
 🏥 Medical Research
+
+----
+
+## Developed By:
+
+V Nikhil Kumar
+
+Aspiring AI/ML Engineer & Data Scientist
+
+-----
+
+## Project Deployment
+
+https://simple-and-multiple-regression-project.onrender.com/
